@@ -14,7 +14,13 @@ const RESET_VALUE = 2;
 let scores = [0, 0];
 let activePlayer = 0;
 let current = 0;
+const LIMIT = 100;
 const diceElement = document.querySelectorAll('.dice');
+
+const limit = document.querySelector('.limit__content');
+
+limit.value = LIMIT;
+
 
 const initGame = () => {
     document.querySelector('#current-0').textContent = 0;
@@ -25,6 +31,23 @@ const initGame = () => {
 }
 
 initGame();
+
+limit.addEventListener('input', function ({target: {value}}) {
+    if (+value.match(/^\d+$/)) {
+        limit.value = +value;
+        limit.focus()
+        limit.value.selectionStart = limit.value.length
+    } else {
+        limit.value = null;
+    }
+})
+
+limit.addEventListener('blur', ({target: {value}}) => {
+    if (value.length <= 0 || value == 0) {
+        limit.value = 100
+    }
+
+})
 
 document.querySelector('.btn-roll').addEventListener('click', function () {
     let dice = [Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1];
@@ -37,7 +60,7 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
         current += sumDice(dice);
         document.getElementById('current-' + activePlayer).textContent = current;
 
-        if (scores[activePlayer] + current >= 20) {
+        if (scores[activePlayer] + current >= +limit.value) {
             alert(`Player ${activePlayer} won!!!`);
         }
 
